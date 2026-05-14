@@ -3,79 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Three.js Scene</title>
+    <title>Bader Khaldi - Portfolio</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
-            overflow: hidden;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
             background: #000;
-        }
-        canvas {
-            display: block;
-            touch-action: none;
-        }
-        #info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
             color: white;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px 20px;
-            border-radius: 10px;
-            font-size: 14px;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+        }
+        
+        #content {
+            position: relative;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+        
+        .hero {
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 5s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(45deg); }
+        }
+        
+        .hero p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #aaa;
+            margin-bottom: 40px;
+        }
+        
+        .timeline-year {
+            position: fixed;
+            top: 50%;
+            right: 40px;
+            transform: translateY(-50%);
+            font-size: clamp(4rem, 10vw, 8rem);
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 5;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .glass-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            pointer-events: all;
+        }
+        
+        .glass-btn {
+            padding: 15px 35px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+        }
+        
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.5);
+            transform: translateY(-3px);
+        }
+        
+        .glass-btn.email {
+            border-color: rgba(255, 0, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 0, 255, 0.2);
+        }
+        
+        .glass-btn.email:hover {
+            border-color: rgba(255, 0, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(255, 0, 255, 0.5);
+        }
+        
+        .experience-section {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .experience-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            margin: 40px 0;
+            pointer-events: all;
+            transition: all 0.3s ease;
+        }
+        
+        .experience-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(0, 255, 255, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
+        }
+        
+        .experience-card h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+        
+        .experience-card h3 {
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            margin-bottom: 15px;
+            color: #ff00ff;
+        }
+        
+        .experience-card .period {
+            font-size: 1.2rem;
+            color: #ffff00;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .experience-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .experience-card li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .experience-card li:before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: #00ffff;
+            font-size: 1.5rem;
+        }
+        
+        .journey-section {
+            text-align: center;
+        }
+        
+        .journey-section h2 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            margin-bottom: 20px;
+            color: #00ffff;
+        }
+        
+        .journey-section p {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: #aaa;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 100;
+            animation: bounce 2s infinite;
+            pointer-events: none;
         }
-        #info h3 {
-            margin: 0 0 10px 0;
-            font-size: 18px;
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
         }
-        #info p {
-            margin: 5px 0;
-            opacity: 0.9;
+        
+        .scroll-indicator span {
+            display: block;
+            width: 30px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            position: relative;
+        }
+        
+        .scroll-indicator span:before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: scrollDown 2s infinite;
+        }
+        
+        @keyframes scrollDown {
+            0% { top: 10px; opacity: 1; }
+            100% { top: 30px; opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-year {
+                right: 20px;
+                font-size: 4rem;
+            }
+            
+            .experience-card {
+                padding: 25px;
+            }
+            
+            .glass-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="info">
-        <h3>🌌 3D Scene Controls</h3>
-        <p>🖱️ Drag to rotate</p>
-        <p>📱 Touch & drag on mobile</p>
-        <p>🔍 Scroll/pinch to zoom</p>
+    <div id="canvas-container"></div>
+    
+    <div class="timeline-year" id="timeline-year">1985</div>
+    
+    <div id="content">
+        <section class="section hero">
+            <h1>BADER KHALDI</h1>
+            <p>Innovator • Leader • Visionary</p>
+            <div class="glass-buttons">
+                <a href="mailto:bader.khaldi@example.com" class="glass-btn email">
+                    <span>✉</span> Email Me
+                </a>
+                <a href="https://linkedin.com/in/baderkhaldi" target="_blank" class="glass-btn">
+                    <span>in</span> LinkedIn
+                </a>
+            </div>
+        </section>
+        
+        <section class="section journey-section">
+            <h2>The Journey</h2>
+            <p>
+                Born in 1985, Bader Khaldi's story is one of continuous growth, innovation, and leadership. 
+                From early beginnings to transformative roles at global companies, every year has been a stepping stone 
+                to excellence.
+            </p>
+        </section>
+        
+        <section class="section experience-section">
+            <div class="experience-card">
+                <h2>Amazon</h2>
+                <h3>Manager</h3>
+                <div class="period">2015 - 2020</div>
+                <ul>
+                    <li>Led cross-functional teams of 50+ employees across multiple departments</li>
+                    <li>Implemented innovative operational strategies that increased efficiency by 35%</li>
+                    <li>Managed $10M+ annual budget with consistent cost optimization</li>
+                    <li>Drove customer satisfaction scores from 82% to 96% within 2 years</li>
+                    <li>Mentored and developed 15+ team members into leadership positions</li>
+                    <li>Spearheaded digital transformation initiatives across the organization</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="section journey-section" style="min-height: 50vh;">
+            <h2>Continue Scrolling</h2>
+            <p>Explore the timeline and experience the journey through time...</p>
+        </section>
+    </div>
+    
+    <div class="scroll-indicator">
+        <span></span>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         // Scene setup
         const scene = new THREE.Scene();
-        scene.fog = new THREE.Fog(0x000000, 1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.z = 5;
 
-        // Camera setup
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.set(8, 5, 8);
-        camera.lookAt(0, 0, 0);
-
-        // Renderer setup
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
-        document.body.appendChild(renderer.domElement);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // Create professional skysphere with gradient
-        const skyGeometry = new THREE.SphereGeometry(800, 64, 64);
+        // Skysphere with gradient
+        const skyGeometry = new THREE.SphereGeometry(1000, 64, 64);
         const skyMaterial = new THREE.ShaderMaterial({
             uniforms: {
-                topColor: { value: new THREE.Color(0x0077ff) },
-                bottomColor: { value: new THREE.Color(0x000033) },
+                topColor: { value: new THREE.Color(0x000033) },
+                bottomColor: { value: new THREE.Color(0x000000) },
                 offset: { value: 33 },
                 exponent: { value: 0.6 }
             },
@@ -103,193 +364,172 @@
         const skySphere = new THREE.Mesh(skyGeometry, skyMaterial);
         scene.add(skySphere);
 
-        // Add ambient stars
+        // Stars
         const starsGeometry = new THREE.BufferGeometry();
-        const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 2, sizeAttenuation: true });
+        const starsMaterial = new THREE.PointsMaterial({ 
+            color: 0xffffff, 
+            size: 2, 
+            sizeAttenuation: true 
+        });
         const starsVertices = [];
-        for (let i = 0; i < 1000; i++) {
-            starsVertices.push((Math.random() - 0.5) * 1500, (Math.random() - 0.5) * 1500, (Math.random() - 0.5) * 1500);
+        for (let i = 0; i < 2000; i++) {
+            starsVertices.push(
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 2000
+            );
         }
         starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
         const stars = new THREE.Points(starsGeometry, starsMaterial);
         scene.add(stars);
 
-        // Lighting
-        scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(10, 20, 10);
-        directionalLight.castShadow = true;
-        directionalLight.shadow.mapSize.width = 2048;
-        directionalLight.shadow.mapSize.height = 2048;
-        scene.add(directionalLight);
+        // Colored lights
+        const lights = [];
+        const lightColors = [0x00ffff, 0xff00ff, 0xffff00, 0x00ff00, 0xff0000];
+        
+        for (let i = 0; i < 5; i++) {
+            const light = new THREE.PointLight(lightColors[i], 2, 100);
+            light.position.set(
+                Math.cos(i * Math.PI * 2 / 5) * 20,
+                Math.sin(i * Math.PI * 2 / 5) * 10,
+                -10
+            );
+            lights.push(light);
+            scene.add(light);
+        }
 
-        const pointLight1 = new THREE.PointLight(0x00ffff, 0.5, 100);
-        pointLight1.position.set(-10, 5, -10);
-        scene.add(pointLight1);
+        // Ambient light
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
 
-        const pointLight2 = new THREE.PointLight(0xff00ff, 0.5, 100);
-        pointLight2.position.set(10, 5, 10);
-        scene.add(pointLight2);
-
-        // Create 3D box
-        const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
-        const boxMaterial = new THREE.MeshStandardMaterial({
-            color: 0x00ff88,
-            metalness: 0.7,
-            roughness: 0.2,
-            emissive: 0x002200,
-            emissiveIntensity: 0.3
+        // Floating particles in lit area
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 0.1,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
         });
-        const box = new THREE.Mesh(boxGeometry, boxMaterial);
-        box.castShadow = true;
-        box.receiveShadow = true;
-        box.position.y = 1;
-        scene.add(box);
+        
+        const particlesVertices = [];
+        for (let i = 0; i < 500; i++) {
+            particlesVertices.push(
+                (Math.random() - 0.5) * 50,
+                (Math.random() - 0.5) * 50,
+                (Math.random() - 0.5) * 30
+            );
+        }
+        particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlesVertices, 3));
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
 
-        // Add edges
-        const edges = new THREE.EdgesGeometry(boxGeometry);
-        const wireframe = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x00ffff }));
-        box.add(wireframe);
+        // Scroll handling
+        let scrollY = window.scrollY;
+        let currentYear = 1985;
+        const birthYear = 1985;
+        const currentYearActual = 2025;
+        
+        function updateTimeline() {
+            const scrollPercent = scrollY / (document.body.scrollHeight - window.innerHeight);
+            const yearRange = currentYearActual - birthYear;
+            currentYear = Math.floor(birthYear + (scrollPercent * yearRange));
+            document.getElementById('timeline-year').textContent = currentYear;
+        }
 
-        // Ground plane
-        const planeGeometry = new THREE.PlaneGeometry(50, 50);
-        const plane = new THREE.Mesh(planeGeometry, new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.3, roughness: 0.8 }));
-        plane.rotation.x = -Math.PI / 2;
-        plane.receiveShadow = true;
-        scene.add(plane);
-
-        // Grid
-        const gridHelper = new THREE.GridHelper(50, 50, 0x00ffff, 0x444444);
-        gridHelper.material.opacity = 0.3;
-        gridHelper.material.transparent = true;
-        scene.add(gridHelper);
-
-        // Orbit Controls
-        const controls = {
-            target: new THREE.Vector3(0, 1, 0),
-            minDistance: 3,
-            maxDistance: 50,
-            rotateSpeed: 0.5,
-            dampingFactor: 0.05,
-            spherical: new THREE.Spherical(),
-            sphericalDelta: new THREE.Spherical(),
-            scale: 1,
-            rotateStart: new THREE.Vector2(),
-            rotateEnd: new THREE.Vector2(),
-            rotateDelta: new THREE.Vector2(),
-            isDragging: false,
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            updateTimeline();
             
-            update: function() {
-                const offset = new THREE.Vector3();
-                const quat = new THREE.Quaternion().setFromUnitVectors(camera.up, new THREE.Vector3(0, 1, 0));
-                const quatInverse = quat.clone().invert();
-                
-                offset.copy(camera.position).sub(this.target);
-                offset.applyQuaternion(quat);
-                
-                this.spherical.setFromVector3(offset);
-                this.spherical.theta += this.sphericalDelta.theta * this.dampingFactor;
-                this.spherical.phi += this.sphericalDelta.phi * this.dampingFactor;
-                
-                this.spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, this.spherical.phi));
-                this.spherical.radius *= this.scale;
-                this.spherical.radius = Math.max(this.minDistance, Math.min(this.maxDistance, this.spherical.radius));
-                
-                offset.setFromSpherical(this.spherical);
-                offset.applyQuaternion(quatInverse);
-                
-                camera.position.copy(this.target).add(offset);
-                camera.lookAt(this.target);
-                
-                this.sphericalDelta.theta *= (1 - this.dampingFactor);
-                this.sphericalDelta.phi *= (1 - this.dampingFactor);
-                this.scale = 1;
+            // Hide scroll indicator after scrolling
+            if (scrollY > 100) {
+                document.querySelector('.scroll-indicator').style.opacity = '0';
+            } else {
+                document.querySelector('.scroll-indicator').style.opacity = '1';
             }
-        };
-
-        // Events
-        renderer.domElement.addEventListener('mousedown', e => {
-            controls.isDragging = true;
-            controls.rotateStart.set(e.clientX, e.clientY);
         });
 
-        renderer.domElement.addEventListener('mousemove', e => {
-            if (!controls.isDragging) return;
-            controls.rotateEnd.set(e.clientX, e.clientY);
-            controls.rotateDelta.subVectors(controls.rotateEnd, controls.rotateStart);
-            controls.sphericalDelta.theta -= 2 * Math.PI * controls.rotateDelta.x / window.innerHeight * controls.rotateSpeed;
-            controls.sphericalDelta.phi -= 2 * Math.PI * controls.rotateDelta.y / window.innerHeight * controls.rotateSpeed;
-            controls.rotateStart.copy(controls.rotateEnd);
-        });
-
-        renderer.domElement.addEventListener('mouseup', () => controls.isDragging = false);
-
-        renderer.domElement.addEventListener('wheel', e => {
-            e.preventDefault();
-            controls.scale = e.deltaY < 0 ? controls.scale / 0.95 : controls.scale * 0.95;
-        }, { passive: false });
-
-        let touchStartDistance = 0;
-        renderer.domElement.addEventListener('touchstart', e => {
-            e.preventDefault();
-            if (e.touches.length === 1) {
-                controls.isDragging = true;
-                controls.rotateStart.set(e.touches[0].clientX, e.touches[0].clientY);
-            } else if (e.touches.length === 2) {
-                const dx = e.touches[0].clientX - e.touches[1].clientX;
-                const dy = e.touches[0].clientY - e.touches[1].clientY;
-                touchStartDistance = Math.sqrt(dx * dx + dy * dy);
-            }
-        }, { passive: false });
-
-        renderer.domElement.addEventListener('touchmove', e => {
-            e.preventDefault();
-            if (e.touches.length === 1 && controls.isDragging) {
-                controls.rotateEnd.set(e.touches[0].clientX, e.touches[0].clientY);
-                controls.rotateDelta.subVectors(controls.rotateEnd, controls.rotateStart);
-                controls.sphericalDelta.theta -= 2 * Math.PI * controls.rotateDelta.x / window.innerHeight * controls.rotateSpeed;
-                controls.sphericalDelta.phi -= 2 * Math.PI * controls.rotateDelta.y / window.innerHeight * controls.rotateSpeed;
-                controls.rotateStart.copy(controls.rotateEnd);
-            } else if (e.touches.length === 2) {
-                const dx = e.touches[0].clientX - e.touches[1].clientX;
-                const dy = e.touches[0].clientY - e.touches[1].clientY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (touchStartDistance > 0) controls.scale = touchStartDistance / distance;
-                touchStartDistance = distance;
-            }
-        }, { passive: false });
-
-        renderer.domElement.addEventListener('touchend', e => {
-            controls.isDragging = false;
-            if (e.touches.length < 2) touchStartDistance = 0;
-        });
-
-        // Animation
+        // Smooth scroll
+        let targetScrollY = scrollY;
+        
+        // Animation loop
         let time = 0;
         function animate() {
             requestAnimationFrame(animate);
             time += 0.01;
-            
-            box.rotation.y += 0.005;
-            box.position.y = 1 + Math.sin(time) * 0.1;
-            
-            pointLight1.position.x = Math.sin(time) * 10;
-            pointLight1.position.z = Math.cos(time) * 10;
-            pointLight2.position.x = Math.cos(time) * 10;
-            pointLight2.position.z = Math.sin(time) * 10;
-            
-            stars.rotation.y += 0.0001;
-            
-            controls.update();
+
+            // Smooth scroll interpolation
+            scrollY += (targetScrollY - scrollY) * 0.1;
+
+            // Rotate stars slowly
+            stars.rotation.y += 0.0002;
+            stars.rotation.x += 0.0001;
+
+            // Animate lights
+            lights.forEach((light, i) => {
+                const angle = time * 0.5 + (i * Math.PI * 2 / lights.length);
+                light.position.x = Math.cos(angle) * 25;
+                light.position.y = Math.sin(angle * 0.5) * 15;
+                light.position.z = Math.sin(angle) * 20 - 10;
+            });
+
+            // Animate particles
+            const positions = particles.geometry.attributes.position.array;
+            for (let i = 0; i < positions.length; i += 3) {
+                positions[i + 1] += Math.sin(time + i) * 0.01;
+                positions[i] += Math.cos(time + i) * 0.01;
+            }
+            particles.geometry.attributes.position.needsUpdate = true;
+            particles.rotation.y += 0.001;
+
+            // Camera movement based on scroll
+            camera.position.y = -(scrollY * 0.002);
+            camera.rotation.x = scrollY * 0.00005;
+
             renderer.render(scene, camera);
         }
-        animate();
 
+        animate();
+        updateTimeline();
+
+        // Handle window resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
+
+        // Smooth scroll on wheel
+        let isScrolling;
+        window.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            targetScrollY += e.deltaY * 0.5;
+            targetScrollY = Math.max(0, Math.min(targetScrollY, document.body.scrollHeight - window.innerHeight));
+            window.scrollTo(0, targetScrollY);
+            
+            clearTimeout(isScrolling);
+            isScrolling = setTimeout(() => {
+                updateTimeline();
+            }, 100);
+        }, { passive: false });
+
+        // Touch support for mobile
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            touchEndY = e.changedTouches[0].screenY;
+            const delta = touchStartY - touchEndY;
+            targetScrollY += delta * 2;
+            targetScrollY = Math.max(0, Math.min(targetScrollY, document.body.scrollHeight - window.innerHeight));
+            window.scrollTo(0, targetScrollY);
+            touchStartY = touchEndY;
+            updateTimeline();
+        }, { passive: true });
     </script>
 </body>
 </html>
