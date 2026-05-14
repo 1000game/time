@@ -11,11 +11,16 @@
             box-sizing: border-box;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
             background: #000;
             color: white;
+            -webkit-overflow-scrolling: touch;
         }
         
         #canvas-container {
@@ -25,6 +30,7 @@
             width: 100%;
             height: 100vh;
             z-index: 1;
+            pointer-events: none;
         }
         
         #content {
@@ -78,8 +84,9 @@
             font-weight: 900;
             color: rgba(255, 255, 255, 0.1);
             z-index: 5;
-            transition: all 0.3s ease;
+            transition: color 0.3s ease;
             pointer-events: none;
+            will-change: contents;
         }
         
         .glass-buttons {
@@ -100,6 +107,7 @@
             font-size: 1.1rem;
             font-weight: 600;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
@@ -135,6 +143,7 @@
             border-radius: 20px;
             padding: 40px;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             margin: 40px 0;
             pointer-events: all;
             transition: all 0.3s ease;
@@ -213,6 +222,7 @@
             z-index: 100;
             animation: bounce 2s infinite;
             pointer-events: none;
+            transition: opacity 0.3s ease;
         }
         
         @keyframes bounce {
@@ -326,13 +336,17 @@
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
         camera.position.z = 5;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const renderer = new THREE.WebGLRenderer({ 
+            antialias: true, 
+            alpha: true,
+            powerPreference: "high-performance"
+        });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         // Skysphere with gradient
-        const skyGeometry = new THREE.SphereGeometry(1000, 64, 64);
+        const skyGeometry = new THREE.SphereGeometry(1000, 32, 32);
         const skyMaterial = new THREE.ShaderMaterial({
             uniforms: {
                 topColor: { value: new THREE.Color(0x000033) },
@@ -364,7 +378,7 @@
         const skySphere = new THREE.Mesh(skyGeometry, skyMaterial);
         scene.add(skySphere);
 
-        // Stars
+        // Stars - reduced for mobile performance
         const starsGeometry = new THREE.BufferGeometry();
         const starsMaterial = new THREE.PointsMaterial({ 
             color: 0xffffff, 
@@ -372,7 +386,7 @@
             sizeAttenuation: true 
         });
         const starsVertices = [];
-        for (let i = 0; i < 2000; i++) {
+        for (let i = 0; i < 1000; i++) {
             starsVertices.push(
                 (Math.random() - 0.5) * 2000,
                 (Math.random() - 0.5) * 2000,
@@ -402,7 +416,7 @@
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
-        // Floating particles in lit area
+        // Floating particles - reduced for mobile performance
         const particlesGeometry = new THREE.BufferGeometry();
         const particlesMaterial = new THREE.PointsMaterial({
             color: 0xffffff,
@@ -413,7 +427,7 @@
         });
         
         const particlesVertices = [];
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < 300; i++) {
             particlesVertices.push(
                 (Math.random() - 0.5) * 50,
                 (Math.random() - 0.5) * 50,
@@ -424,42 +438,53 @@
         const particles = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particles);
 
-        // Scroll handling
-        let scrollY = window.scrollY;
+        // Scroll handling - simplified for mobile
+        let scrollY = 0;
+        let targetScrollY = 0;
         let currentYear = 1985;
         const birthYear = 1985;
         const currentYearActual = 2025;
         
         function updateTimeline() {
-            const scrollPercent = scrollY / (document.body.scrollHeight - window.innerHeight);
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = Math.max(0, Math.min(1, scrollY / maxScroll));
             const yearRange = currentYearActual - birthYear;
-            currentYear = Math.floor(birthYear + (scrollPercent * yearRange));
-            document.getElementById('timeline-year').textContent = currentYear;
+            const newYear = Math.floor(birthYear + (scrollPercent * yearRange));
+            
+            if (newYear !== currentYear) {
+                currentYear = newYear;
+                document.getElementById('timeline-year').textContent = currentYear;
+            }
         }
 
-        window.addEventListener('scroll', () => {
-            scrollY = window.scrollY;
+        // Use native scroll - no custom scroll handling
+        function onScroll() {
+            scrollY = window.pageYOffset || document.documentElement.scrollTop;
             updateTimeline();
             
             // Hide scroll indicator after scrolling
+            const indicator = document.querySelector('.scroll-indicator');
             if (scrollY > 100) {
-                document.querySelector('.scroll-indicator').style.opacity = '0';
+                indicator.style.opacity = '0';
             } else {
-                document.querySelector('.scroll-indicator').style.opacity = '1';
+                indicator.style.opacity = '1';
             }
-        });
+        }
 
-        // Smooth scroll
-        let targetScrollY = scrollY;
+        // Use passive scroll listener for better mobile performance
+        window.addEventListener('scroll', onScroll, { passive: true });
         
-        // Animation loop
+        // Animation loop - optimized
         let time = 0;
-        function animate() {
+        let lastTime = performance.now();
+        
+        function animate(currentTime) {
             requestAnimationFrame(animate);
-            time += 0.01;
-
-            // Smooth scroll interpolation
-            scrollY += (targetScrollY - scrollY) * 0.1;
+            
+            const deltaTime = (currentTime - lastTime) / 1000;
+            lastTime = currentTime;
+            
+            time += deltaTime;
 
             // Rotate stars slowly
             stars.rotation.y += 0.0002;
@@ -473,7 +498,7 @@
                 light.position.z = Math.sin(angle) * 20 - 10;
             });
 
-            // Animate particles
+            // Animate particles - optimized
             const positions = particles.geometry.attributes.position.array;
             for (let i = 0; i < positions.length; i += 3) {
                 positions[i + 1] += Math.sin(time + i) * 0.01;
@@ -482,14 +507,17 @@
             particles.geometry.attributes.position.needsUpdate = true;
             particles.rotation.y += 0.001;
 
-            // Camera movement based on scroll
-            camera.position.y = -(scrollY * 0.002);
-            camera.rotation.x = scrollY * 0.00005;
+            // Camera movement based on scroll - smooth interpolation
+            const targetCameraY = -(scrollY * 0.002);
+            camera.position.y += (targetCameraY - camera.position.y) * 0.1;
+            
+            const targetRotationX = scrollY * 0.00005;
+            camera.rotation.x += (targetRotationX - camera.rotation.x) * 0.1;
 
             renderer.render(scene, camera);
         }
 
-        animate();
+        animate(performance.now());
         updateTimeline();
 
         // Handle window resize
@@ -497,38 +525,6 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Smooth scroll on wheel
-        let isScrolling;
-        window.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            targetScrollY += e.deltaY * 0.5;
-            targetScrollY = Math.max(0, Math.min(targetScrollY, document.body.scrollHeight - window.innerHeight));
-            window.scrollTo(0, targetScrollY);
-            
-            clearTimeout(isScrolling);
-            isScrolling = setTimeout(() => {
-                updateTimeline();
-            }, 100);
-        }, { passive: false });
-
-        // Touch support for mobile
-        let touchStartY = 0;
-        let touchEndY = 0;
-
-        document.addEventListener('touchstart', (e) => {
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-
-        document.addEventListener('touchmove', (e) => {
-            touchEndY = e.changedTouches[0].screenY;
-            const delta = touchStartY - touchEndY;
-            targetScrollY += delta * 2;
-            targetScrollY = Math.max(0, Math.min(targetScrollY, document.body.scrollHeight - window.innerHeight));
-            window.scrollTo(0, targetScrollY);
-            touchStartY = touchEndY;
-            updateTimeline();
         }, { passive: true });
     </script>
 </body>
