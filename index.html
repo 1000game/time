@@ -16,7 +16,7 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             overflow-x: hidden;
             background: #000;
             color: white;
@@ -82,11 +82,44 @@
             transform: translateY(-50%);
             font-size: clamp(4rem, 10vw, 8rem);
             font-weight: 900;
-            color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
             z-index: 5;
-            transition: color 0.3s ease;
             pointer-events: none;
-            will-change: contents;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.6),
+                0 0 30px rgba(0, 255, 255, 0.8),
+                0 0 40px rgba(0, 255, 255, 0.6),
+                0 0 60px rgba(0, 255, 255, 0.4),
+                0 0 80px rgba(255, 0, 255, 0.4),
+                0 0 100px rgba(255, 0, 255, 0.3);
+            animation: starGlow 3s ease-in-out infinite;
+            filter: brightness(1.5);
+        }
+        
+        @keyframes starGlow {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px rgba(255, 255, 255, 1),
+                    0 0 20px rgba(255, 255, 255, 0.8),
+                    0 0 30px rgba(0, 255, 255, 1),
+                    0 0 40px rgba(0, 255, 255, 0.8),
+                    0 0 60px rgba(0, 255, 255, 0.6),
+                    0 0 80px rgba(255, 0, 255, 0.6),
+                    0 0 100px rgba(255, 0, 255, 0.4);
+                filter: brightness(1.8) hue-rotate(0deg);
+            }
+            50% {
+                text-shadow: 
+                    0 0 15px rgba(255, 255, 255, 1),
+                    0 0 25px rgba(255, 255, 255, 0.9),
+                    0 0 35px rgba(255, 0, 255, 1),
+                    0 0 50px rgba(255, 0, 255, 0.8),
+                    0 0 70px rgba(255, 0, 255, 0.6),
+                    0 0 90px rgba(0, 255, 255, 0.6),
+                    0 0 120px rgba(0, 255, 255, 0.4);
+                filter: brightness(2) hue-rotate(45deg);
+            }
         }
         
         .glass-buttons {
@@ -98,38 +131,61 @@
         }
         
         .glass-btn {
-            padding: 15px 35px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50px;
+            padding: 16px 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 0.5px solid rgba(255, 255, 255, 0.18);
+            border-radius: 14px;
             color: white;
             text-decoration: none;
-            font-size: 1.1rem;
+            font-size: 17px;
             font-weight: 600;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            letter-spacing: -0.4px;
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+            gap: 8px;
+            box-shadow: 
+                0 1px 2px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+        }
+        
+        .glass-btn:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.12);
         }
         
         .glass-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(0, 255, 255, 0.8);
-            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.5);
-            transform: translateY(-3px);
-        }
-        
-        .glass-btn.email {
-            border-color: rgba(255, 0, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(255, 0, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(0, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
         
         .glass-btn.email:hover {
-            border-color: rgba(255, 0, 255, 0.8);
-            box-shadow: 0 8px 32px rgba(255, 0, 255, 0.5);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(255, 0, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
         
         .experience-section {
@@ -138,34 +194,55 @@
         }
         
         .experience-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(0, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            border: 0.5px solid rgba(255, 255, 255, 0.18);
             border-radius: 20px;
             padding: 40px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
             margin: 40px 0;
             pointer-events: all;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .experience-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
         }
         
         .experience-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(0, 255, 255, 0.6);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(0, 255, 255, 0.4);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
         
         .experience-card h2 {
             font-size: clamp(2rem, 4vw, 2.5rem);
             margin-bottom: 10px;
             color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
         }
         
         .experience-card h3 {
             font-size: clamp(1.3rem, 3vw, 1.8rem);
             margin-bottom: 15px;
             color: #ff00ff;
+            text-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
         }
         
         .experience-card .period {
@@ -173,6 +250,7 @@
             color: #ffff00;
             margin-bottom: 20px;
             font-weight: 600;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
         }
         
         .experience-card ul {
@@ -204,6 +282,7 @@
             font-size: clamp(2.5rem, 5vw, 3.5rem);
             margin-bottom: 20px;
             color: #00ffff;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
         }
         
         .journey-section p {
@@ -378,7 +457,7 @@
         const skySphere = new THREE.Mesh(skyGeometry, skyMaterial);
         scene.add(skySphere);
 
-        // Stars - reduced for mobile performance
+        // Stars
         const starsGeometry = new THREE.BufferGeometry();
         const starsMaterial = new THREE.PointsMaterial({ 
             color: 0xffffff, 
@@ -416,31 +495,98 @@
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
-        // Floating particles - reduced for mobile performance
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesMaterial = new THREE.PointsMaterial({
-            color: 0xffffff,
-            size: 0.1,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
-        });
+        // Meteors (shooting stars)
+        const meteors = [];
+        const meteorCount = 500;
         
-        const particlesVertices = [];
-        for (let i = 0; i < 300; i++) {
-            particlesVertices.push(
-                (Math.random() - 0.5) * 50,
-                (Math.random() - 0.5) * 50,
-                (Math.random() - 0.5) * 30
-            );
+        class Meteor {
+            constructor() {
+                this.reset();
+                
+                // Create meteor mesh
+                const geometry = new THREE.SphereGeometry(0.2, 8, 8);
+                const material = new THREE.MeshBasicMaterial({
+                    color: this.color,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                this.mesh = new THREE.Mesh(geometry, material);
+                
+                // Create trail
+                const trailGeometry = new THREE.BufferGeometry();
+                const trailPositions = new Float32Array(30); // 10 points, 3 coords each
+                trailGeometry.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+                const trailMaterial = new THREE.LineBasicMaterial({
+                    color: this.color,
+                    transparent: true,
+                    opacity: 0.5,
+                    linewidth: 2
+                });
+                this.trail = new THREE.Line(trailGeometry, trailMaterial);
+                
+                scene.add(this.mesh);
+                scene.add(this.trail);
+            }
+            
+            reset() {
+                this.position = new THREE.Vector3(
+                    (Math.random() - 0.5) * 100,
+                    Math.random() * 50 + 20,
+                    (Math.random() - 0.5) * 100
+                );
+                
+                this.velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * 2,
+                    -Math.random() * 3 - 2,
+                    (Math.random() - 0.5) * 2
+                );
+                
+                const colors = [0x00ffff, 0xff00ff, 0xffff00, 0xff6600, 0xff0066];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                this.life = Math.random() * 3 + 2;
+                this.age = 0;
+                this.trailPositions = [];
+            }
+            
+            update(deltaTime) {
+                this.age += deltaTime;
+                
+                if (this.age > this.life || this.position.y < -30) {
+                    this.reset();
+                }
+                
+                this.velocity.y -= 0.02; // gravity
+                this.position.add(this.velocity.clone().multiplyScalar(deltaTime * 10));
+                
+                if (this.mesh) {
+                    this.mesh.position.copy(this.position);
+                    this.mesh.material.color.setHex(this.color);
+                    
+                    // Update trail
+                    this.trailPositions.unshift(this.position.clone());
+                    if (this.trailPositions.length > 10) {
+                        this.trailPositions.pop();
+                    }
+                    
+                    const positions = this.trail.geometry.attributes.position.array;
+                    for (let i = 0; i < this.trailPositions.length; i++) {
+                        positions[i * 3] = this.trailPositions[i].x;
+                        positions[i * 3 + 1] = this.trailPositions[i].y;
+                        positions[i * 3 + 2] = this.trailPositions[i].z;
+                    }
+                    this.trail.geometry.attributes.position.needsUpdate = true;
+                    this.trail.material.color.setHex(this.color);
+                }
+            }
         }
-        particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlesVertices, 3));
-        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particles);
+        
+        for (let i = 0; i < meteorCount; i++) {
+            meteors.push(new Meteor());
+        }
 
-        // Scroll handling - simplified for mobile
+        // Scroll handling
         let scrollY = 0;
-        let targetScrollY = 0;
         let currentYear = 1985;
         const birthYear = 1985;
         const currentYearActual = 2025;
@@ -457,12 +603,10 @@
             }
         }
 
-        // Use native scroll - no custom scroll handling
         function onScroll() {
             scrollY = window.pageYOffset || document.documentElement.scrollTop;
             updateTimeline();
             
-            // Hide scroll indicator after scrolling
             const indicator = document.querySelector('.scroll-indicator');
             if (scrollY > 100) {
                 indicator.style.opacity = '0';
@@ -471,10 +615,9 @@
             }
         }
 
-        // Use passive scroll listener for better mobile performance
         window.addEventListener('scroll', onScroll, { passive: true });
         
-        // Animation loop - optimized
+        // Animation loop
         let time = 0;
         let lastTime = performance.now();
         
@@ -498,16 +641,10 @@
                 light.position.z = Math.sin(angle) * 20 - 10;
             });
 
-            // Animate particles - optimized
-            const positions = particles.geometry.attributes.position.array;
-            for (let i = 0; i < positions.length; i += 3) {
-                positions[i + 1] += Math.sin(time + i) * 0.01;
-                positions[i] += Math.cos(time + i) * 0.01;
-            }
-            particles.geometry.attributes.position.needsUpdate = true;
-            particles.rotation.y += 0.001;
+            // Update meteors
+            meteors.forEach(meteor => meteor.update(deltaTime));
 
-            // Camera movement based on scroll - smooth interpolation
+            // Camera movement based on scroll
             const targetCameraY = -(scrollY * 0.002);
             camera.position.y += (targetCameraY - camera.position.y) * 0.1;
             
